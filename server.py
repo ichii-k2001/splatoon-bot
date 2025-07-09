@@ -7,6 +7,7 @@ app = FastAPI()
 
 @app.get("/")
 async def health_check():
+    print("✅ UptimeRobot ping received!")
     return {"message": "Bot is running!"}
 
 @app.on_event("startup")
