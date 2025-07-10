@@ -84,7 +84,7 @@ class WeaponLookup(commands.Cog):
             response += f"📦 **Type:** {'、'.join(types)}"
         else:
             response = f"⚠️ ブキ名 **{weapon_name}** は見つかりませんでした。"
-        await interaction.response.send_message(response)
+        await interaction.response.send_message(response, ephemeral=True)
 
     @lookup_weapon.autocomplete("weapon_name")
     async def weapon_autocomplete(self, interaction: discord.Interaction, current: str):
@@ -102,7 +102,7 @@ class WeaponLookup(commands.Cog):
             response = f"🔎 ロール **{role_name}** に該当するブキ一覧（{len(matches)}個）:\n" + "\n".join(f"・{m}" for m in matches)
         else:
             response = f"⚠️ ロール **{role_name}** に該当するブキは見つかりませんでした。"
-        await interaction.response.send_message(response)
+        await interaction.response.send_message(response, ephemeral=True)
 
     @list_by_role.autocomplete("role_name")
     async def role_autocomplete(self, interaction: discord.Interaction, current: str):
@@ -112,6 +112,26 @@ class WeaponLookup(commands.Cog):
             all_roles.update(tag.replace("role:", "") for tag in tags if tag.startswith("role:"))
         matches = [r for r in all_roles if current.lower() in r.lower()]
         return [app_commands.Choice(name=r, value=r) for r in sorted(matches)[:25]]
+
+    @app_commands.command(name="splatoon_pattern", description="編成パターンの一覧または詳細を表示します")
+    @app_commands.describe(pattern="（オプション）表示したいパターン名")
+    async def show_pattern(self, interaction: discord.Interaction, pattern: str = None):
+        patterns = load_team_patterns()
+        if pattern:
+            if pattern in patterns:
+                roles = [r.replace("role:", "") for r in patterns[pattern]]
+                response = f"📋 パターン **{pattern}** の内容:\n" + "\n".join(roles)
+            else:
+                response = f"⚠️ パターン **{pattern}** は見つかりませんでした。"
+        else:
+            response = "📋 利用可能な編成パターン一覧:\n" + "\n".join(f"・{name}" for name in patterns.keys())
+        await interaction.response.send_message(response, ephemeral=True)
+
+    @show_pattern.autocomplete("pattern")
+    async def pattern_autocomplete(self, interaction: discord.Interaction, current: str):
+        patterns = load_team_patterns()
+        matches = [p for p in patterns.keys() if current.lower() in p.lower()]
+        return [app_commands.Choice(name=m, value=m) for m in matches[:25]]
 
 class HelpCog(commands.Cog):
     def __init__(self, bot):
@@ -127,6 +147,8 @@ class HelpCog(commands.Cog):
             "　- 指定したブキのロールとタイプを表示します（補完あり）\n\n"
             "👉 `/splatoon_role <ロール名>`\n"
             "　- 指定したロールに属するブキをすべて表示します（補完あり）\n\n"
+            "👉 `/splatoon_pattern [パターン名]`\n"
+            "　- 登録済みの編成パターンを確認できます（補完あり）\n\n"
             "👉 `/splatoon_help`\n"
             "　- このコマンド一覧を表示します"
         )
