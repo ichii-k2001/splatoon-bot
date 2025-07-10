@@ -106,6 +106,7 @@ uvicorn server:app --host 0.0.0.0 --port 8080
 - `/splatoon_team [pattern]`
 - `/splatoon_weapon <武器名>`
 - `/splatoon_role <ロール名>`
+- `/splatoon_pattern [パターン名]`
 
 ---
 
