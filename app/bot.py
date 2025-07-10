@@ -120,7 +120,7 @@ class HelpCog(commands.Cog):
     @app_commands.command(name="splatoon_help", description="このBotの利用可能なコマンド一覧を表示します")
     async def help(self, interaction: discord.Interaction):
         response = (
-            "**🛠 Splatoon Bot 利用可能コマンド一覧**\n\n"
+            "**🛠 SplatoonRandomBot（ver.1.0.0） 利用可能コマンド一覧**\n\n"
             "👉 `/splatoon_team [pattern]`\n"
             "　- チームごとにランダムなブキを編成します（pattern省略でdefault）\n\n"
             "👉 `/splatoon_weapon <ブキ名>`\n"
